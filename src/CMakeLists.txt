@@ -1091,13 +1091,18 @@ endif()
 # Enable otclient console only for debug build
 # *****************************************************************************
 if(WIN32)
-  set_target_properties(${PROJECT_NAME}
-          PROPERTIES
-          LINK_FLAGS_DEBUG "/SUBSYSTEM:CONSOLE"
-          LINK_FLAGS_RELEASE "/SUBSYSTEM:windows /ENTRY:mainCRTStartup"
-          LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:CONSOLE"
-          LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:windows /ENTRY:mainCRTStartup"
-  )
+  if(MSVC)
+    set_target_properties(${PROJECT_NAME}
+            PROPERTIES
+            LINK_FLAGS_DEBUG "/SUBSYSTEM:CONSOLE"
+            LINK_FLAGS_RELEASE "/SUBSYSTEM:windows /ENTRY:mainCRTStartup"
+            LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:CONSOLE"
+            LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:windows /ENTRY:mainCRTStartup"
+    )
+  else()
+    # MinGW rejects the MSVC /SUBSYSTEM flags. Keep a console so startup errors stay visible.
+    target_link_options(${PROJECT_NAME} PRIVATE -mconsole)
+  endif()
 endif(WIN32)
 
 if(ANDROID)

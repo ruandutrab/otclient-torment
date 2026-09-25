@@ -48,11 +48,11 @@
     },
     {
       "name": "opengl",
-      "platform": "windows | linux"
+      "platform": "windows | linux | mingw"
     },
     {
       "name": "glew",
-      "platform": "windows | linux | osx"
+      "platform": "windows | linux | osx | mingw"
     },
     {
       "name": "angle",
