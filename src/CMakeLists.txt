@@ -1023,6 +1023,25 @@ else() # Linux
           Freetype::Freetype
   )
 
+  # MinGW does not honor MSVC #pragma comment(lib). Pull the Win32
+  # import libs the client and the static vcpkg ports reference.
+  if(WIN32)
+    target_link_libraries(otclient_core
+            PUBLIC
+            ws2_32
+            winmm
+            bcrypt
+            crypt32
+            imm32
+            version
+            iphlpapi
+            shlwapi
+            psapi
+            dwmapi
+            ${DBGHELP_LIBRARY}
+    )
+  endif()
+
   if (TOGGLE_FRAMEWORK_PROTOBUF)
       target_link_libraries(otclient_core
           PUBLIC
