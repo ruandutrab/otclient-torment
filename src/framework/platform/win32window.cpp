@@ -442,7 +442,7 @@ bool WIN32Window::isExtensionSupported(const char* ext)
     //TODO
     return false;
 #else
-    const auto wglGetExtensionsString = static_cast<const char* (__stdcall*)()>(getExtensionProcAddress("wglGetExtensionsStringEXT"));
+    const auto wglGetExtensionsString = reinterpret_cast<const char* (__stdcall*)()>(getExtensionProcAddress("wglGetExtensionsStringEXT"));
     if (!wglGetExtensionsString)
         return false;
 
@@ -1065,7 +1065,7 @@ void WIN32Window::setVerticalSync(bool enable)
         if (!isExtensionSupported("WGL_EXT_swap_control"))
             return;
 
-        const auto wglSwapInterval = static_cast<BOOL(__stdcall*)(int)>(getExtensionProcAddress("wglSwapIntervalEXT"));
+        const auto wglSwapInterval = reinterpret_cast<BOOL(__stdcall*)(int)>(getExtensionProcAddress("wglSwapIntervalEXT"));
         if (!wglSwapInterval)
             return;
 
