@@ -58,6 +58,7 @@ Module
     - game_taskboard
     - game_wheel
     - game_proficiency
+    - game_autoloot
 
   @onLoad: init()
   @onUnload: terminate()
