@@ -1,0 +1,11 @@
+Module
+  name: game_autoloot
+  description: Loot nearby corpses into configured backpacks
+  author: OTClient
+  sandboxed: true
+  scripts: [ autoloot ]
+  dependencies:
+    - game_interface
+    - game_mainpanel
+  @onLoad: init()
+  @onUnload: terminate()

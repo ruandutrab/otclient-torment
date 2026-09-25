@@ -27,6 +27,11 @@
 #    undef CPPHTTPLIB_USE_NON_BLOCKING_GETADDRINFO
 #    define CPPHTTPLIB_DISABLE_MACOSX_AUTOMATIC_ROOT_CERTIFICATES
 #endif
+#if defined(__MINGW32__)
+// This MinGW-w64 does not declare GetAddrInfoExCancel, which cpp-httplib
+// calls from its non-blocking DNS path.
+#    undef CPPHTTPLIB_USE_NON_BLOCKING_GETADDRINFO
+#endif
 #include <httplib.h>
 
 #include "httplogin.h"

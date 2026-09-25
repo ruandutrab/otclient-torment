@@ -1023,6 +1023,25 @@ else() # Linux
           Freetype::Freetype
   )
 
+  # MinGW does not honor MSVC #pragma comment(lib). Pull the Win32
+  # import libs the client and the static vcpkg ports reference.
+  if(WIN32)
+    target_link_libraries(otclient_core
+            PUBLIC
+            ws2_32
+            winmm
+            bcrypt
+            crypt32
+            imm32
+            version
+            iphlpapi
+            shlwapi
+            psapi
+            dwmapi
+            ${DBGHELP_LIBRARY}
+    )
+  endif()
+
   if (TOGGLE_FRAMEWORK_PROTOBUF)
       target_link_libraries(otclient_core
           PUBLIC
@@ -1091,13 +1110,20 @@ endif()
 # Enable otclient console only for debug build
 # *****************************************************************************
 if(WIN32)
-  set_target_properties(${PROJECT_NAME}
-          PROPERTIES
-          LINK_FLAGS_DEBUG "/SUBSYSTEM:CONSOLE"
-          LINK_FLAGS_RELEASE "/SUBSYSTEM:windows /ENTRY:mainCRTStartup"
-          LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:CONSOLE"
-          LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:windows /ENTRY:mainCRTStartup"
-  )
+  if(MSVC)
+    set_target_properties(${PROJECT_NAME}
+            PROPERTIES
+            LINK_FLAGS_DEBUG "/SUBSYSTEM:CONSOLE"
+            LINK_FLAGS_RELEASE "/SUBSYSTEM:windows /ENTRY:mainCRTStartup"
+            LINK_FLAGS_RELWITHDEBINFO "/SUBSYSTEM:CONSOLE"
+            LINK_FLAGS_MINSIZEREL "/SUBSYSTEM:windows /ENTRY:mainCRTStartup"
+    )
+  else()
+    # MinGW rejects the MSVC /SUBSYSTEM flags. Keep a console so startup errors stay visible.
+    # -Bstatic picks libwinpthread.a instead of libwinpthread-1.dll. Windows
+    # system libraries stay import libs and still load the system DLLs.
+    target_link_options(${PROJECT_NAME} PRIVATE -mconsole -static-libgcc -static-libstdc++ -Wl,-Bstatic)
+  endif()
 endif(WIN32)
 
 if(ANDROID)
