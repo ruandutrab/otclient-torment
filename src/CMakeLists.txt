@@ -1120,7 +1120,9 @@ if(WIN32)
     )
   else()
     # MinGW rejects the MSVC /SUBSYSTEM flags. Keep a console so startup errors stay visible.
-    target_link_options(${PROJECT_NAME} PRIVATE -mconsole)
+    # -Bstatic picks libwinpthread.a instead of libwinpthread-1.dll. Windows
+    # system libraries stay import libs and still load the system DLLs.
+    target_link_options(${PROJECT_NAME} PRIVATE -mconsole -static-libgcc -static-libstdc++ -Wl,-Bstatic)
   endif()
 endif(WIN32)
 
